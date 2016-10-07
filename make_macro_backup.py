@@ -12,7 +12,7 @@ session.auth = credentials
 zendesk = 'https://{your_zendesk_url}.zendesk.com'
 
 date = datetime.date.today()
-backup_path = os.path.join(str(date), language)
+backup_path = os.path.join(str(date))
 if not os.path.exists(backup_path):
     os.makedirs(backup_path)
 
