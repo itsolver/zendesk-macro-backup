@@ -28,7 +28,7 @@ while endpoint:
 
     for macro in data['macros']:
         title = macro['title']
-        safe_title = re.sub('[/:\s_—]', '_', title)
+        safe_title = re.sub('[/:\*\?\>\<\|\s_—]', '_', title)
         filename = safe_title + '.json'
         created = macro['created_at']
         updated = macro['updated_at']
