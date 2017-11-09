@@ -8,8 +8,8 @@ import getpass
 
 session = requests.Session()
 zendesk_subdomain = input('Zendesk subdomain: ')
-zendesk_user = input('Zendesk {username}/token or username: ')
-zendesk_secret = input("Zendesk api_token or password: ")
+zendesk_user = input('Zendesk username/token or username: ')
+zendesk_secret = getpass.getpass('Zendesk api_token or password: ')
 session.auth = (zendesk_user, zendesk_secret)
 zendesk = 'https://' + zendesk_subdomain + '.zendesk.com'
 
