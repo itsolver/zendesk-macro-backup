@@ -6,18 +6,20 @@ import json
 import requests
 import getpass
 
-pw = getpass.getpass()
-credentials = 'angus@itsolver.net', pw
 session = requests.Session()
-session.auth = credentials
-
-zendesk = 'https://itsolver.zendesk.com'
+zendesk_subdomain = input('Zendesk subdomain: ')
+zendesk_user = input('Zendesk username+"/token" or username: ')
+zendesk_secret = input("Zendesk token or password: ")
+session.auth = (zendesk_user, zendesk_secret)
+zendesk = 'https://' + zendesk_subdomain + '.zendesk.com'
 
 date = datetime.date.today()
-backup_path = os.path.join(str(date))
-if not os.path.exists(backup_path):
-    os.makedirs(backup_path)
-
+active_backup_path = os.path.join(str(date))
+if not os.path.exists(active_backup_path):
+    os.makedirs(active_backup_path)
+inactive_backup_path = os.path.join(active_backup_path, "inactive/")
+if not os.path.exists(inactive_backup_path):
+    os.makedirs(inactive_backup_path)
 log = []
 
 endpoint = zendesk + '/api/v2/triggers.json'
@@ -33,6 +35,11 @@ while endpoint:
         id = trigger['id']
         title = trigger['title']
         safe_title = re.sub('[/:\*\?\>\<\|\s_—]', '_', title)
+        active = trigger['active']
+        if active:
+            backup_path = active_backup_path
+        else: 
+            backup_path = inactive_backup_path
         filename = safe_title + '.json'
         created = trigger['created_at']
         updated = trigger['updated_at']
@@ -40,7 +47,6 @@ while endpoint:
         with open(os.path.join(backup_path, filename), mode='w', encoding='utf-8') as f:
            f.write(content) 
         print(filename + ' - copied!')
-
         log.append((filename, title, created, updated))
 
     endpoint = data['next_page']
